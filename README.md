@@ -1,0 +1,21 @@
+- CookRank (UI beast)
+    - Cooking survival + follow friends and leave comments on recipe cards
+    - Upload picture of final product to get it counted
+    - Start with “meal prep” recipes
+    - Master them by cooking them 10 times
+    - Unlock card designs as you increase mastery
+        - Blank, bronze x5, silver x10, gold x15, plat x20, master x50, grand master x100
+    - Getting to silver, unlocks next level
+        - High school chump
+        - College dormer
+        - Meal prepper
+        - Hobbyist
+        - Date night
+        - Junior Chef
+        - Real Chef
+        - Expert Chef
+        - Master Chef
+        - Grandmaster Chef
+    - Show top 10 cooker’s profiles in each category
+        - Get ability to create variations of the recipes and publish them (after review)
+    - User with top 10 in 10 or more recipes get to create new recipes and menus and submit them to the app to get them published
