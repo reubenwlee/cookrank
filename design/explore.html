@@ -1,0 +1,210 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>CookRank: three directions</title>
+<link rel="stylesheet" href="kit/device.css">
+<style>
+/* SF Pro is not installed on this Linux machine: Inter stands in for it. */
+@font-face { font-family: "SF Pro"; src: local("Inter"); font-weight: 100 900; font-stretch: 30% 150%; }
+@font-face { font-family: "Archivo"; src: url(fonts/Archivo-1.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+@font-face { font-family: "Young Serif"; src: url(fonts/YoungSerif-1.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "Unbounded"; src: url(fonts/Unbounded-1.woff2) format("woff2"); font-weight: 200 900; }
+
+svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; }
+.body { position: absolute; inset: var(--safe-top) 0 0; display: flex; flex-direction: column; }
+.bar { height: 52px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 20px; }
+.bar .acts { display: flex; gap: 8px; }
+.btn44 { width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; }
+.tabs { position: absolute; left: 20px; right: 92px; bottom: 21px; height: 62px; border-radius: 31px; display: flex; align-items: center; justify-content: space-around; padding: 0 6px; z-index: 10; }
+.tab { flex: 1; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font: 500 10px/1 var(--sf); }
+.cam { position: absolute; right: 20px; bottom: 21px; width: 62px; height: 62px; border-radius: 31px; display: grid; place-items: center; z-index: 10; }
+.cam svg.i { width: 26px; height: 26px; stroke-width: 2; }
+.scroll { flex: 1; min-height: 0; overflow: hidden; }
+.ph { background-size: cover; background-position: center; }
+.edge { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; z-index: 5; pointer-events: none; background: linear-gradient(to bottom, transparent, var(--ground) 70%); }
+
+/* ---------- A. The binder: dark, condensed, foil ---------- */
+.dA { --ground:#14110F; --raised:#221E1A; --ink:#F5F0E8; --ink-2:#B9B0A4; --ink-3:#857C71; --rule:#3A342D; --accent:#FF6A2B; --on-accent:#1A0B03;
+  background: var(--ground); color: var(--ink); --glass-dark: rgba(52,46,40,.62); }
+.dA .handle { font: 750 22px/1 "Archivo"; font-stretch: 75%; letter-spacing: -.2px; }
+.dA .head { padding: 12px 20px 0; display: flex; gap: 16px; align-items: center; }
+.dA .av { width: 76px; height: 76px; border-radius: 38px; flex: none; background: url(img/eggs.jpg) center/cover; box-shadow: 0 0 0 2px var(--ground), 0 0 0 4px #CFD9DE; }
+.dA .name { font: 850 46px/.9 "Archivo"; font-stretch: 62%; letter-spacing: -.5px; text-transform: uppercase; margin: 0; }
+.dA .lvl { font: 400 15px/20px var(--sf); color: var(--ink-2); margin-top: 6px; }
+.dA .lvl b { color: var(--ink); font-weight: 600; }
+.dA .stats { padding: 16px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink-2); }
+.dA .stats b { color: var(--ink); font-weight: 700; }
+.dA .unlock { margin: 20px 20px 0; padding-top: 14px; border-top: 0.5px solid var(--rule); display: flex; align-items: center; gap: 12px; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.dA .pips { display: flex; gap: 4px; flex: none; }
+.dA .pips i { width: 14px; height: 20px; border-radius: 3px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--rule); }
+.dA .pips i.on { background: linear-gradient(135deg,#F7DA86,#C1912F 60%,#8E6418); box-shadow: none; }
+.dA .grid { padding: 24px 16px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.dA .card { aspect-ratio: 3/4.1; border-radius: 14px; padding: 5px; display: flex; flex-direction: column; position: relative; }
+.dA .card .ph { flex: 1; border-radius: 9px; }
+.dA .card .meta { display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 6px 4px; gap: 6px; }
+.dA .card .nm { font: 700 15px/1.05 "Archivo"; font-stretch: 80%; }
+.dA .card .tr { font: 600 11px/1 var(--sf); letter-spacing: .6px; text-transform: uppercase; opacity: .78; margin-top: 4px; display: block; }
+.dA .card .ct { font: 850 36px/.8 "Archivo"; font-stretch: 62%; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+.dA .t-plat   { background: linear-gradient(140deg,#F2F7F8 0%,#C3D3DA 35%,#F6FBFC 52%,#9FB4BE 100%); color:#13242C; }
+.dA .t-gold   { background: linear-gradient(140deg,#FBE39A 0%,#D5A53E 38%,#FCE7A6 54%,#9C6E1C 100%); color:#2A1C04; }
+.dA .t-silver { background: linear-gradient(140deg,#F1F2F3 0%,#B5BABF 38%,#F4F5F6 54%,#80878E 100%); color:#1C2024; }
+.dA .t-bronze { background: linear-gradient(140deg,#E7AE84 0%,#A9663B 40%,#E2A57A 55%,#6E3D1E 100%); color:#24120A; }
+.dA .t-blank  { background: var(--raised); color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
+.dA .tabs .tab { color: var(--ink-2); }
+.dA .tabs .tab.on { color: var(--ink); background: rgba(255,255,255,.10); }
+.dA .cam { background: var(--accent); color: var(--on-accent); }
+
+/* ---------- B. The diner wall: light, serif, photographs ---------- */
+.dB { --ground:#F3F2EF; --raised:#FFFFFF; --ink:#1A1C1E; --ink-2:#55595E; --ink-3:#7E838A; --rule:#D9D8D3; --accent:#2346C8; --on-accent:#FFFFFF;
+  background: var(--ground); color: var(--ink); }
+.dB .handle { font: 650 17px/1 var(--sf); letter-spacing: -.3px; display: flex; align-items: center; gap: 4px; }
+.dB .head { padding: 16px 20px 0; display: flex; align-items: center; gap: 18px; }
+.dB .av { width: 88px; height: 88px; border-radius: 44px; flex: none; background: url(img/eggs.jpg) center/cover; }
+.dB .name { font: 400 34px/1.02 "Young Serif"; letter-spacing: -.6px; margin: 0; }
+.dB .lvl { font: 400 15px/20px var(--sf); color: var(--ink-2); margin-top: 6px; }
+.dB .bio { padding: 14px 20px 0; font: 400 15px/20px var(--sf); }
+.dB .stats { padding: 6px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink-2); }
+.dB .stats b { color: var(--ink); font-weight: 650; }
+.dB .unlock { margin: 18px 20px 0; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.dB .meter { height: 4px; border-radius: 2px; background: var(--rule); margin-top: 8px; overflow: hidden; }
+.dB .meter i { display: block; width: 33.3%; height: 100%; background: var(--accent); }
+.dB .grid { padding: 28px 16px 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 20px 12px; }
+.dB .print { display: flex; flex-direction: column; }
+.dB .print .fr { padding: 5px; border-radius: 4px; aspect-ratio: 1/1.12; display: flex; box-shadow: 0 1px 2px rgba(30,25,20,.18); }
+.dB .print:nth-child(3n+1) .fr { transform: rotate(-1.4deg); }
+.dB .print:nth-child(3n+2) .fr { transform: rotate(.9deg); }
+.dB .print:nth-child(3n) .fr { transform: rotate(-.5deg); }
+.dB .print .ph { flex: 1; border-radius: 1px; }
+.dB .print .cap { margin-top: 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 4px; }
+.dB .print .nm { font: 400 14px/1.15 "Young Serif"; letter-spacing: -.1px; }
+.dB .print .ct { font: 700 13px/1 var(--sf); color: var(--accent); font-variant-numeric: tabular-nums; }
+.dB .t-plat   { background: linear-gradient(135deg,#EEF4F6,#B7C8D0 50%,#E9F1F4); }
+.dB .t-gold   { background: linear-gradient(135deg,#F6DA88,#C9962F 50%,#F3D57F); }
+.dB .t-silver { background: linear-gradient(135deg,#ECEDEE,#A9AEB3 50%,#E5E7E9); }
+.dB .t-bronze { background: linear-gradient(135deg,#DFA17A,#A0603A 50%,#D99A72); }
+.dB .t-blank  { background: #FFFFFF; }
+.dB .tabs .tab { color: var(--ink-2); }
+.dB .tabs .tab.on { color: var(--accent); background: rgba(0,0,0,.05); }
+.dB .cam { background: var(--accent); color: var(--on-accent); }
+
+/* ---------- C. The game show: tomato field, extended, stickers ---------- */
+.dC { --ground:#E4472C; --raised:#FFF3E6; --ink:#1B0F0C; --ink-2:#3E1A12; --rule:#1B0F0C; --accent:#FFD43A; --on-accent:#1B0F0C;
+  background: var(--ground); color: var(--ink); --glass: rgba(255,236,226,.34); }
+.dC .handle { font: 700 17px/1 var(--sf); letter-spacing: -.3px; }
+.dC .head { padding: 10px 20px 0; position: relative; }
+.dC .name { font: 800 40px/.98 "Unbounded"; letter-spacing: -1.6px; margin: 0; max-width: 250px; }
+.dC .burst { position: absolute; right: 18px; top: 2px; width: 104px; height: 104px; display: grid; place-items: center; text-align: center; transform: rotate(8deg); }
+.dC .burst svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dC .burst span { position: relative; font: 800 13px/1.05 "Unbounded"; letter-spacing: -.3px; }
+.dC .burst span b { display: block; font-size: 30px; letter-spacing: -1px; }
+.dC .stats { padding: 14px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink); }
+.dC .stats b { color: var(--ink); font-weight: 750; }
+.dC .unlock { margin: 18px 20px 0; display: flex; align-items: center; gap: 12px; font: 600 13px/18px var(--sf); }
+.dC .slots { display: flex; gap: 6px; flex: none; }
+.dC .slots i { width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--ink); }
+.dC .slots i.on { background: var(--accent); }
+.dC .grid { padding: 26px 16px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; }
+.dC .card { border: 2.5px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); padding: 7px; position: relative; display: flex; flex-direction: column; }
+.dC .card .fr { aspect-ratio: 1/1; display: flex; }
+.dC .card .ph { flex: 1; border-radius: 10px; }
+.dC .card .nm { font: 750 15px/1.15 var(--sf); letter-spacing: -.3px; padding: 9px 4px 3px; }
+.dC .card .tr { font: 600 13px/1 var(--sf); padding: 0 4px 4px; color: var(--ink); }
+.dC .card .stk { position: absolute; top: -12px; right: -10px; width: 52px; height: 52px; display: grid; place-items: center; transform: rotate(10deg); }
+.dC .card .stk svg { position: absolute; inset: 0; }
+.dC .card .stk span { position: relative; font: 800 17px/1 "Unbounded"; letter-spacing: -.8px; }
+.dC .t-plat   { background: #BFE0E3; }
+.dC .t-gold   { background: #F3BE3E; }
+.dC .t-silver { background: #C7CCD1; }
+.dC .t-bronze { background: #C47A4A; }
+.dC .t-blank  { background: #F1E2D2; }
+.dC .tabs .tab { color: var(--ink-2); }
+.dC .tabs .tab.on { color: var(--ink); background: rgba(255,255,255,.38); }
+.dC .cam { background: var(--accent); color: var(--on-accent); border: 2.5px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+</style></head><body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="feed" viewBox="0 0 24 24"><rect x="4" y="3.5" width="16" height="11" rx="2.5"/><path d="M4 18.5h16M7 21h10"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/><path d="M9 7.5h6"/></symbol>
+  <symbol id="ranks" viewBox="0 0 24 24"><path d="M3.5 20.5h17M5 20.5v-6h4.5v6M9.5 20.5V9h5v11.5M14.5 20.5v-8H19v8"/></symbol>
+  <symbol id="me" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c1-3.6 3.9-5.5 7.5-5.5s6.5 1.9 7.5 5.5"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.6-2.2h5.8L16.5 6h2A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-9Z"/><circle cx="12" cy="12.8" r="3.8"/></symbol>
+  <symbol id="addp" viewBox="0 0 24 24"><circle cx="10" cy="8.5" r="4"/><path d="M3 20.5c.9-3.4 3.6-5.5 7-5.5 1.4 0 2.7.3 3.8 1M18.5 13v7M15 16.5h7"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+  <symbol id="star" viewBox="0 0 100 100"><path d="M50 2l9 14 16-6 1 17 17 4-9 15 12 12-16 7 3 17-17-1-6 16-14-10-14 10-6-16-17 1 3-17-16-7 12-12-9-15 17-4 1-17 16 6z"/></symbol>
+</svg>
+
+<!-- ================= A ================= -->
+<section class="screen dA" data-name="a-binder" data-theme="dark" data-time="19:46">
+  <div class="body">
+    <div class="bar"><span class="handle">theo.cooks</span><span class="acts"><span class="btn44 glass"><svg class="i"><use href="#addp"/></svg></span><span class="btn44 glass"><svg class="i"><use href="#menu"/></svg></span></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="head"><div class="av"></div><div><h1 class="name">Theo Marsh</h1><div class="lvl">Level 2 · <b>College dormer</b></div></div></div>
+      <div class="stats"><b>77</b> cooks · <b>214</b> followers · <b>183</b> following</div>
+      <div class="unlock"><span class="pips"><i class="on"></i><i></i><i></i></span><span>Silver on 2 more College dormer recipes opens <b style="color:var(--ink);font-weight:600">Meal prepper</b></span></div>
+      <div class="grid">
+        <div class="card t-plat"><div class="ph" style="background-image:url(img/eggs.jpg)"></div><div class="meta"><div><span class="nm">Eggs on toast</span><span class="tr">Platinum</span></div><span class="ct">23</span></div></div>
+        <div class="card t-gold"><div class="ph" style="background-image:url(img/friedrice.jpg)"></div><div class="meta"><div><span class="nm">Egg fried rice</span><span class="tr">Gold</span></div><span class="ct">17</span></div></div>
+        <div class="card t-silver"><div class="ph" style="background-image:url(img/grilledcheese.jpg)"></div><div class="meta"><div><span class="nm">Grilled cheese</span><span class="tr">Silver</span></div><span class="ct">11</span></div></div>
+        <div class="card t-silver"><div class="ph" style="background-image:url(img/quesadilla.jpg)"></div><div class="meta"><div><span class="nm">Quesadilla</span><span class="tr">Silver</span></div><span class="ct">10</span></div></div>
+        <div class="card t-bronze"><div class="ph" style="background-image:url(img/ramen.jpg)"></div><div class="meta"><div><span class="nm">Ramen, upgraded</span><span class="tr">Bronze</span></div><span class="ct">6</span></div></div>
+        <div class="card t-blank"><div class="ph" style="background-image:url(img/penne.jpg)"></div><div class="meta"><div><span class="nm">Tomato penne</span><span class="tr">1 to bronze</span></div><span class="ct">4</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#feed"/></svg>Feed</span><span class="tab"><svg class="i"><use href="#book"/></svg>Recipes</span><span class="tab"><svg class="i"><use href="#ranks"/></svg>Ranks</span><span class="tab on"><svg class="i"><use href="#me"/></svg>Profile</span></nav>
+  <span class="cam" data-float><svg class="i"><use href="#cam"/></svg></span>
+</section>
+
+<!-- ================= B ================= -->
+<section class="screen dB" data-name="b-diner-wall" data-time="19:46">
+  <div class="body">
+    <div class="bar"><span class="handle">theo.cooks <svg class="i" style="width:18px;height:18px"><use href="#chev"/></svg></span><span class="acts"><span class="btn44 glass"><svg class="i"><use href="#addp"/></svg></span><span class="btn44 glass"><svg class="i"><use href="#menu"/></svg></span></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="head"><div class="av"></div><div><h1 class="name">Theo Marsh</h1><div class="lvl">Level 2 · College dormer</div></div></div>
+      <div class="bio">Hall B shared kitchen. One pan, one hob that works.</div>
+      <div class="stats"><b>77</b> cooks · <b>214</b> followers · <b>183</b> following</div>
+      <div class="unlock">Silver on 1 of 3 College dormer recipes. Meal prepper next.<div class="meter"><i></i></div></div>
+      <div class="grid">
+        <div class="print"><div class="fr t-plat"><div class="ph" style="background-image:url(img/eggs.jpg)"></div></div><div class="cap"><span class="nm">Eggs on toast</span><span class="ct">23</span></div></div>
+        <div class="print"><div class="fr t-gold"><div class="ph" style="background-image:url(img/friedrice.jpg)"></div></div><div class="cap"><span class="nm">Fried rice</span><span class="ct">17</span></div></div>
+        <div class="print"><div class="fr t-silver"><div class="ph" style="background-image:url(img/grilledcheese.jpg)"></div></div><div class="cap"><span class="nm">Grilled cheese</span><span class="ct">11</span></div></div>
+        <div class="print"><div class="fr t-silver"><div class="ph" style="background-image:url(img/quesadilla.jpg)"></div></div><div class="cap"><span class="nm">Quesadilla</span><span class="ct">10</span></div></div>
+        <div class="print"><div class="fr t-bronze"><div class="ph" style="background-image:url(img/ramen.jpg)"></div></div><div class="cap"><span class="nm">Ramen</span><span class="ct">6</span></div></div>
+        <div class="print"><div class="fr t-blank"><div class="ph" style="background-image:url(img/penne.jpg)"></div></div><div class="cap"><span class="nm">Tomato penne</span><span class="ct">4</span></div></div>
+        <div class="print"><div class="fr t-blank"><div class="ph" style="background-image:url(img/wrap.jpg)"></div></div><div class="cap"><span class="nm">Chicken wraps</span><span class="ct">3</span></div></div>
+        <div class="print"><div class="fr t-blank"><div class="ph" style="background-image:url(img/pancakes.jpg)"></div></div><div class="cap"><span class="nm">Pancakes</span><span class="ct">2</span></div></div>
+        <div class="print"><div class="fr t-blank"><div class="ph" style="background-image:url(img/tacos.jpg)"></div></div><div class="cap"><span class="nm">Tacos</span><span class="ct">1</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#feed"/></svg>Feed</span><span class="tab"><svg class="i"><use href="#book"/></svg>Recipes</span><span class="tab"><svg class="i"><use href="#ranks"/></svg>Ranks</span><span class="tab on"><svg class="i"><use href="#me"/></svg>Profile</span></nav>
+  <span class="cam" data-float><svg class="i"><use href="#cam"/></svg></span>
+</section>
+
+<!-- ================= C ================= -->
+<section class="screen dC" data-name="c-game-show" data-time="19:46">
+  <div class="body">
+    <div class="bar"><span class="handle">theo.cooks</span><span class="acts"><span class="btn44 glass"><svg class="i"><use href="#addp"/></svg></span><span class="btn44 glass"><svg class="i"><use href="#menu"/></svg></span></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="head">
+        <h1 class="name">Theo Marsh</h1>
+        <div class="burst"><svg><use href="#star" style="fill:var(--accent);stroke:var(--ink);stroke-width:3"/></svg><span><b>2</b>College dormer</span></div>
+      </div>
+      <div class="stats"><b>77</b> cooks · <b>214</b> followers · <b>183</b> following</div>
+      <div class="unlock"><span class="slots"><i class="on"></i><i></i><i></i></span><span>Two more silvers for Meal prepper</span></div>
+      <div class="grid">
+        <div class="card t-plat"><div class="fr"><div class="ph" style="background-image:url(img/eggs.jpg)"></div></div><div class="nm">Eggs on toast</div><div class="tr">Platinum</div><span class="stk"><svg viewBox="0 0 100 100"><use href="#star" style="fill:var(--accent);stroke:var(--ink);stroke-width:5"/></svg><span>23</span></span></div>
+        <div class="card t-gold"><div class="fr"><div class="ph" style="background-image:url(img/friedrice.jpg)"></div></div><div class="nm">Egg fried rice</div><div class="tr">Gold</div><span class="stk"><svg viewBox="0 0 100 100"><use href="#star" style="fill:var(--accent);stroke:var(--ink);stroke-width:5"/></svg><span>17</span></span></div>
+        <div class="card t-silver"><div class="fr"><div class="ph" style="background-image:url(img/grilledcheese.jpg)"></div></div><div class="nm">Grilled cheese</div><div class="tr">Silver</div><span class="stk"><svg viewBox="0 0 100 100"><use href="#star" style="fill:var(--accent);stroke:var(--ink);stroke-width:5"/></svg><span>11</span></span></div>
+        <div class="card t-silver"><div class="fr"><div class="ph" style="background-image:url(img/quesadilla.jpg)"></div></div><div class="nm">Quesadilla</div><div class="tr">Silver</div><span class="stk"><svg viewBox="0 0 100 100"><use href="#star" style="fill:var(--accent);stroke:var(--ink);stroke-width:5"/></svg><span>10</span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#feed"/></svg>Feed</span><span class="tab"><svg class="i"><use href="#book"/></svg>Recipes</span><span class="tab"><svg class="i"><use href="#ranks"/></svg>Ranks</span><span class="tab on"><svg class="i"><use href="#me"/></svg>Profile</span></nav>
+  <span class="cam" data-float><svg class="i"><use href="#cam"/></svg></span>
+</section>
+
+<script src="kit/device.js"></script>
+</body></html>

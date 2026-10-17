@@ -1,0 +1,101 @@
+[
+  {
+    "name": "a-binder",
+    "fails": [],
+    "warns": [
+      "7 gradients. Gradients are a seasoning, not a surface treatment."
+    ],
+    "facts": {
+      "fonts": {
+        "Archivo": 10,
+        "SF Pro": 12
+      },
+      "sizes": [
+        46,
+        36,
+        22,
+        15,
+        13,
+        11
+      ],
+      "weights": [
+        "400",
+        "600",
+        "700",
+        "750",
+        "850"
+      ],
+      "leftEdges": 5,
+      "accentHues": [
+        24
+      ],
+      "cards": 1
+    }
+  },
+  {
+    "name": "b-diner-wall",
+    "fails": [],
+    "warns": [
+      "Text inside the system's safe areas: \"Chicken wraps\" (home indicator); \"Pancakes\" (home indicator); \"Tacos\" (home indicator)",
+      "6 gradients. Gradients are a seasoning, not a surface treatment.",
+      "11 elements cast shadows. Depth should come from one or two layers, not every tile."
+    ],
+    "facts": {
+      "fonts": {
+        "SF Pro": 14,
+        "Young Serif": 10
+      },
+      "sizes": [
+        34,
+        17,
+        15,
+        14,
+        13
+      ],
+      "weights": [
+        "400",
+        "650",
+        "700"
+      ],
+      "leftEdges": 4,
+      "accentHues": [
+        216
+      ],
+      "cards": 0
+    }
+  },
+  {
+    "name": "c-game-show",
+    "fails": [],
+    "warns": [
+      "7 elements cast shadows. Depth should come from one or two layers, not every tile."
+    ],
+    "facts": {
+      "fonts": {
+        "SF Pro": 14,
+        "Unbounded": 7
+      },
+      "sizes": [
+        40,
+        30,
+        17,
+        15,
+        13
+      ],
+      "weights": [
+        "400",
+        "600",
+        "700",
+        "750",
+        "800",
+        "900"
+      ],
+      "leftEdges": 4,
+      "accentHues": [
+        48,
+        192
+      ],
+      "cards": 4
+    }
+  }
+]
