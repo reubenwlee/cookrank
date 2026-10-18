@@ -1,0 +1,647 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>CookRank: screens</title>
+<link rel="stylesheet" href="kit/device.css">
+<style>
+/* SF Pro is not installed on this Linux machine: Inter stands in for it. */
+@font-face { font-family: "SF Pro"; src: local("Inter"); font-weight: 100 900; font-stretch: 30% 150%; }
+@font-face { font-family: "Archivo"; src: url(fonts/Archivo-1.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
+
+:root {
+  --ground:#FFFFFF; --raised:#F3F3F2; --ink:#111112; --ink-2:#5E5E63; --ink-3:#8A8A8F; --rule:#E6E6E8;
+  --accent:#C8410E; --on-accent:#FFFFFF; --dim: rgba(17,17,18,.45);
+  --plat: linear-gradient(140deg,#F2F7F8 0%,#C3D3DA 35%,#F6FBFC 52%,#9FB4BE 100%);
+  --gold: linear-gradient(140deg,#FBE39A 0%,#D5A53E 38%,#FCE7A6 54%,#9C6E1C 100%);
+  --silver: linear-gradient(140deg,#F1F2F3 0%,#B5BABF 38%,#F4F5F6 54%,#80878E 100%);
+  --bronze: linear-gradient(140deg,#E7AE84 0%,#A9663B 40%,#E2A57A 55%,#6E3D1E 100%);
+  --master: linear-gradient(140deg,#D9675A 0%,#8E2219 40%,#E07A6C 54%,#5A0F0A 100%);
+  --gm: linear-gradient(140deg,#2A241A 0%,#7A6334 35%,#F3D47E 52%,#2A241A 100%);
+}
+.screen { background: var(--ground); color: var(--ink); }
+.screen[data-theme="dark"] { --ground:#000000; --raised:#1C1C1E; --ink:#F4F4F5; --ink-2:#A3A3A8; --ink-3:#7C7C82; --rule:#2C2C2E; --accent:#FF7A3D; --on-accent:#1A0800;
+  background: var(--ground); color: var(--ink); }
+
+svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; display: block; flex: none; }
+svg.i.s { width: 18px; height: 18px; }
+.ph { display: block; background: var(--img) center/cover; }
+.body { position: absolute; inset: var(--safe-top) 0 0; display: flex; flex-direction: column; }
+.screen[data-scroll] .body { position: relative; inset: auto; padding-top: var(--safe-top); }
+.nav { height: 52px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 20px; gap: 12px; }
+.nav.pad16 { padding-left: 16px; }
+.acts { display: flex; gap: 8px; align-items: center; }
+.b44 { width: 44px; height: 44px; border-radius: 22px; display: grid; place-items: center; flex: none; }
+.b44.fill { background: var(--accent); color: var(--on-accent); }
+.wordmark { font: 850 28px/1 "Archivo"; font-stretch: 70%; letter-spacing: -.3px; }
+.lt { font: 700 34px/41px var(--sf); letter-spacing: -.4px; margin: 4px 20px 0; }
+.scroll { flex: 1; min-height: 0; overflow: hidden; }
+.tnum { font-variant-numeric: tabular-nums; }
+.muted { color: var(--ink-2); }
+.edge { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; z-index: 5; pointer-events: none; background: linear-gradient(to bottom, transparent, var(--ground) 72%); }
+
+/* tab bar */
+.tabs { position: absolute; left: 20px; right: 20px; bottom: 21px; height: 62px; border-radius: 31px; display: flex; align-items: center; padding: 0 5px; z-index: 10; }
+.tab { flex: 1; height: 52px; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font: 500 10px/1 var(--sf); color: var(--ink-2); }
+.tab.on { color: var(--ink); background: rgba(0,0,0,.06); }
+.screen[data-theme="dark"] .tab.on { background: rgba(255,255,255,.12); }
+
+/* tier frames */
+.fr { display: flex; padding: 3px; border-radius: 14px; }
+.fr > .ph { flex: 1; border-radius: 11px; aspect-ratio: 1; }
+.t-plat .fr, .fr.t-plat { background: var(--plat); }
+.t-gold .fr, .fr.t-gold { background: var(--gold); }
+.t-silver .fr, .fr.t-silver { background: var(--silver); }
+.t-bronze .fr, .fr.t-bronze { background: var(--bronze); }
+.t-master .fr, .fr.t-master { background: var(--master); }
+.t-gm .fr, .fr.t-gm { background: var(--gm); }
+.t-blank .fr, .fr.t-blank { background: var(--rule); padding: 1px; }
+.t-blank .fr > .ph { border-radius: 13px; }
+.t-new .fr { background: transparent; padding: 0; }
+.t-new .fr > .ph { border-radius: 14px; background: var(--raised); display: grid; place-items: center; color: var(--ink-3); }
+.t-lock .fr { background: transparent; padding: 0; }
+.t-lock .fr > .ph { border-radius: 14px; border: 1.5px dashed var(--ink-3); display: grid; place-items: center; color: var(--ink-2); font: 850 34px/1 "Archivo"; font-stretch: 70%; }
+
+/* recipe tile */
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 10px; }
+.tile { display: flex; flex-direction: column; min-width: 0; }
+.tile .nm { font: 600 13px/16px var(--sf); letter-spacing: -.1px; margin-top: 8px; }
+.tile .ct { font: 400 12px/16px var(--sf); color: var(--ink-2); margin-top: 1px; }
+.tile .ct b { color: var(--ink); font-weight: 700; }
+
+/* ---------- Home ---------- */
+.rank { padding: 6px 20px 0; }
+.rank .k { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.rank h1 { font: 850 58px/.9 "Archivo"; font-stretch: 62%; letter-spacing: -.6px; text-transform: uppercase; margin: 6px 0 0; }
+.rank .pts { font: 400 15px/20px var(--sf); color: var(--ink-2); margin-top: 10px; }
+.rank .pts b { color: var(--ink); font-weight: 700; }
+.prog { display: flex; align-items: center; gap: 12px; margin-top: 16px; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.prog .seg { display: flex; gap: 4px; flex: none; }
+.prog .seg i { width: 28px; height: 6px; border-radius: 3px; background: var(--rule); }
+.prog .seg i.on { background: var(--gold); }
+.block { margin: 28px 16px 0; border: 1px solid var(--rule); border-radius: 26px; padding: 16px 14px 20px; }
+.block.now { border-color: var(--ink); border-width: 1.5px; }
+.block .hd { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 0 2px 16px; }
+.block .hd .n { font: 400 12px/16px var(--sf); color: var(--ink-2); display: block; }
+.block .hd h2 { font: 700 20px/25px var(--sf); letter-spacing: -.4px; margin: 2px 0 0; }
+.block .hd .st { font: 500 13px/18px var(--sf); color: var(--ink-2); display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.block.locked .hd h2 { color: var(--ink-2); }
+.more { margin: 24px 20px 0; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+
+/* ---------- Recipe ---------- */
+.hero { margin: 4px 16px 0; }
+.hero .fr { padding: 4px; border-radius: 30px; }
+.hero .fr > .ph { aspect-ratio: 4/3; border-radius: 26px; }
+.rtitle { padding: 20px 20px 0; }
+.rtitle .k { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.rtitle h1 { font: 700 28px/34px var(--sf); letter-spacing: -.6px; margin: 4px 0 0; }
+.count { display: flex; align-items: flex-end; gap: 14px; padding: 18px 20px 0; }
+.count .big { font: 850 76px/.78 "Archivo"; font-stretch: 62%; letter-spacing: -1px; }
+.count .tr { font: 650 17px/22px var(--sf); }
+.count .nx { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.bar { margin: 14px 20px 0; height: 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+.bar i { display: block; height: 100%; width: 40%; background: var(--ink); }
+.fam { margin: 14px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink-2); }
+.fam b { color: var(--ink); font-weight: 600; }
+.sec { padding: 44px 20px 0; }
+.sec h3 { font: 700 20px/25px var(--sf); letter-spacing: -.4px; margin: 0; }
+.sec .sub { font: 400 13px/18px var(--sf); color: var(--ink-2); margin: 4px 0 16px; }
+.rowlabel { font: 400 12px/16px var(--sf); color: var(--ink-2); margin: 20px 0 10px; display: flex; align-items: center; gap: 6px; }
+.lrow { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-top: 0.5px solid var(--rule); border-bottom: 0.5px solid var(--rule); font: 400 17px/22px var(--sf); }
+.lrow .grow { flex: 1; }
+.lrow .muted { font-size: 15px; }
+.cook { display: flex; gap: 14px; padding: 12px 0; border-bottom: 0.5px solid var(--rule); }
+.cook .ph { width: 72px; height: 72px; border-radius: 12px; flex: none; }
+.cook .d { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.cook .t { font: 400 15px/20px var(--sf); margin-top: 2px; }
+.seeall { font: 600 15px/20px var(--sf); padding: 16px 0 0; }
+
+/* ---------- Composer ---------- */
+.cbar { height: 52px; flex: none; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 16px 0 20px; }
+.cbar .l { font: 400 17px/22px var(--sf); }
+.cbar .c { font: 600 17px/22px var(--sf); }
+.cbar .r { justify-self: end; height: 44px; padding: 0 20px; border-radius: 22px; background: var(--accent); color: var(--on-accent); font: 600 17px/44px var(--sf); }
+.crec { display: flex; align-items: center; gap: 12px; padding: 12px 20px 16px; }
+.crec .fr { width: 48px; flex: none; padding: 2px; border-radius: 10px; }
+.crec .fr > .ph { border-radius: 8px; }
+.crec .a { font: 600 15px/20px var(--sf); }
+.crec .b { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.cphoto { margin: 0 16px; flex: 1; min-height: 0; border-radius: 22px; }
+.cbtns { display: flex; gap: 8px; padding: 12px 16px 0; }
+.cbtns span { height: 44px; padding: 0 16px; border-radius: 22px; background: var(--raised); display: flex; align-items: center; gap: 8px; font: 500 15px/1 var(--sf); }
+.cdesc { margin: 20px 20px 0; padding-top: 14px; border-top: 0.5px solid var(--rule); font: 400 17px/23px var(--sf); }
+.cmeta { display: flex; justify-content: space-between; padding: 10px 20px 0; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.cfoot { height: 64px; flex: none; }
+
+/* ---------- Mastery ---------- */
+.chips { display: flex; gap: 8px; padding: 14px 20px 0; overflow: hidden; flex: none; }
+.chip { height: 36px; padding: 0 14px; border-radius: 18px; border: 1px solid var(--rule); display: flex; align-items: center; gap: 6px; font: 500 15px/1 var(--sf); white-space: nowrap; flex: none; }
+.chip.on { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.chip.off { color: var(--ink-2); }
+.segc { display: flex; padding: 2px; border-radius: 18px; background: var(--raised); height: 36px; flex: 1; }
+.segc span { flex: 1; display: grid; place-items: center; border-radius: 16px; font: 500 13px/1 var(--sf); color: var(--ink); }
+.segc span.on { background: var(--ground); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
+.filters2 { display: flex; gap: 8px; padding: 10px 20px 0; flex: none; }
+.h4 { font: 600 15px/20px var(--sf); padding: 28px 20px 12px; display: flex; justify-content: space-between; }
+.h4 span { font-weight: 400; color: var(--ink-2); }
+.starred { display: flex; gap: 12px; padding: 0 20px; }
+.starred .tile { width: 84px; flex: none; }
+.mrow { display: flex; align-items: center; gap: 14px; padding: 10px 20px 10px 20px; }
+.mrow .fr { width: 56px; flex: none; padding: 2.5px; border-radius: 12px; }
+.mrow .fr > .ph { border-radius: 9.5px; }
+.mrow .txt { flex: 1; min-width: 0; padding: 4px 0; border-bottom: 0.5px solid var(--rule); align-self: stretch; display: flex; align-items: center; gap: 10px; }
+.mrow .txt .grow { flex: 1; min-width: 0; }
+.mrow .a { font: 400 17px/22px var(--sf); display: flex; align-items: center; gap: 6px; }
+.mrow .b { font: 400 13px/18px var(--sf); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mrow .n { text-align: right; }
+.mrow .n b { display: block; font: 850 24px/1 "Archivo"; font-stretch: 62%; }
+.mrow .n span { font: 400 12px/16px var(--sf); color: var(--ink-2); }
+.star { color: var(--accent); }
+
+/* ---------- Leaderboard ---------- */
+.lcap { font: 400 13px/18px var(--sf); color: var(--ink-2); padding: 12px 20px 8px; }
+.lb { display: flex; align-items: center; gap: 12px; padding: 9px 20px; }
+.lb .rk { width: 26px; flex: none; font: 850 20px/1 "Archivo"; font-stretch: 62%; text-align: center; }
+.lb .av { width: 44px; height: 44px; border-radius: 22px; flex: none; }
+.lb .grow { flex: 1; min-width: 0; }
+.lb .u { font: 600 15px/20px var(--sf); }
+.lb .m { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.lb .p { text-align: right; flex: none; }
+.lb .p b { display: block; font: 650 17px/22px var(--sf); font-variant-numeric: tabular-nums; }
+.lb .p span { font: 400 12px/16px var(--sf); color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.lb.top .rk { font-size: 24px; }
+.you { position: absolute; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--ground); border-top: 0.5px solid var(--rule); padding: 4px 0 104px; }
+.you .lb .rk { font-size: 20px; }
+
+/* ---------- Profile ---------- */
+.pseg { display: flex; padding: 3px; border-radius: 22px; height: 44px; width: 184px; }
+.pseg span { flex: 1; display: grid; place-items: center; border-radius: 19px; font: 600 15px/1 var(--sf); color: var(--ink-2); }
+.pseg span.on { background: var(--ink); color: var(--ground); }
+.phead { display: flex; align-items: center; gap: 20px; padding: 12px 20px 0; }
+.phead .av { width: 86px; height: 86px; border-radius: 43px; flex: none; }
+.pstats { flex: 1; display: flex; justify-content: space-between; }
+.pstats div { text-align: center; }
+.pstats b { display: block; font: 700 17px/22px var(--sf); font-variant-numeric: tabular-nums; }
+.pstats span { font: 400 13px/18px var(--sf); }
+.pname { padding: 14px 20px 0; font: 600 15px/20px var(--sf); }
+.prank { padding: 2px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink-2); }
+.pbio { padding: 6px 20px 0; font: 400 15px/20px var(--sf); }
+.ptop { padding: 4px 20px 0; font: 400 15px/20px var(--sf); color: var(--ink-2); }
+.ptop b { color: var(--ink); font-weight: 600; }
+.pbtns { display: flex; gap: 8px; padding: 14px 20px 0; }
+.pbtns span { flex: 1; height: 44px; border-radius: 12px; background: var(--raised); display: grid; place-items: center; font: 600 15px/1 var(--sf); }
+.pbtns span.go { background: var(--accent); color: var(--on-accent); }
+.pins { display: flex; gap: 12px; padding: 20px 16px 0; overflow: hidden; }
+.pin { width: 64px; flex: none; text-align: center; }
+.pin .ring { width: 64px; height: 64px; border-radius: 32px; padding: 3px; display: flex; }
+.pin .ring .ph { flex: 1; border-radius: 50%; box-shadow: 0 0 0 2px var(--ground); }
+.pin .ring.dash { border: 1.5px dashed var(--ink-3); padding: 0; display: grid; place-items: center; color: var(--ink-2); }
+.pin span { display: block; font: 400 12px/16px var(--sf); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 20px; }
+.pgrid .ph { aspect-ratio: 3/4; }
+
+/* feed */
+.post { padding-top: 6px; }
+.post .ph-h { display: flex; align-items: center; gap: 10px; padding: 8px 12px 10px 16px; }
+.post .ph-h .av { width: 36px; height: 36px; border-radius: 18px; flex: none; }
+.post .ph-h .grow { flex: 1; min-width: 0; }
+.post .u { font: 600 15px/20px var(--sf); }
+.post .r { font: 400 13px/18px var(--sf); color: var(--ink-2); }
+.post .img { aspect-ratio: 4/5; }
+.post .acts2 { display: flex; gap: 16px; padding: 12px 16px 0; }
+.post .acts2 svg.i { width: 26px; height: 26px; }
+.post .likes { font: 600 15px/20px var(--sf); padding: 8px 16px 0; }
+.post .cap { font: 400 15px/20px var(--sf); padding: 4px 16px 0; }
+.post .cap b { font-weight: 600; }
+.post .vc { font: 400 15px/20px var(--sf); color: var(--ink-2); padding: 4px 16px 0; }
+.post .when { font: 400 12px/16px var(--sf); color: var(--ink-2); padding: 4px 16px 0; }
+.liked { color: var(--accent); }
+.liked svg.i { fill: currentColor; }
+
+/* comments sheet */
+.scrim { position: absolute; inset: 0; background: rgba(0,0,0,.32); z-index: 20; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; top: 300px; z-index: 21; background: var(--ground); border-radius: 30px 30px 0 0; display: flex; flex-direction: column; }
+.grab { width: 36px; height: 5px; border-radius: 3px; background: var(--rule); margin: 8px auto 0; }
+.sheet .st { font: 600 17px/22px var(--sf); text-align: center; padding: 12px 0 14px; border-bottom: 0.5px solid var(--rule); }
+.cm { display: flex; gap: 12px; padding: 14px 16px 4px 20px; }
+.cm .av { width: 34px; height: 34px; border-radius: 17px; flex: none; }
+.cm .grow { flex: 1; }
+.cm .u { font: 600 13px/18px var(--sf); }
+.cm .u span { font-weight: 400; color: var(--ink-2); margin-left: 6px; }
+.cm .t { font: 400 15px/20px var(--sf); margin-top: 1px; }
+.cm .rp { font: 500 12px/16px var(--sf); color: var(--ink-2); margin-top: 6px; }
+.cm .hl { color: var(--ink-2); padding-top: 10px; }
+.cinput { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px 46px 20px; border-top: 0.5px solid var(--rule); }
+.cinput .av { width: 34px; height: 34px; border-radius: 17px; flex: none; }
+.cinput .f { flex: 1; height: 44px; border-radius: 22px; border: 1px solid var(--rule); display: flex; align-items: center; padding: 0 16px; font: 400 15px/1 var(--sf); color: var(--ink-2); }
+.cinput .p { font: 600 15px/1 var(--sf); color: var(--accent); }
+
+/* create form */
+.form { padding: 0 16px; }
+.cover { margin: 8px 16px 0; height: 150px; border-radius: 22px; border: 1.5px dashed var(--ink-3); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; font: 500 15px/20px var(--sf); color: var(--ink-2); flex: none; }
+.group { margin: 20px 16px 0; background: var(--raised); border-radius: 22px; overflow: hidden; }
+.fl { display: flex; align-items: center; min-height: 52px; padding: 0 16px; gap: 10px; font: 400 17px/22px var(--sf); }
+.fl + .fl { border-top: 0.5px solid var(--rule); }
+.fl .grow { flex: 1; }
+.fl .v { color: var(--ink-2); display: flex; align-items: center; gap: 4px; }
+.dots { display: flex; gap: 6px; }
+.dots i { width: 10px; height: 10px; border-radius: 5px; background: var(--rule); }
+.dots i.on { background: var(--ink); }
+.note { margin: 14px 32px 0; font: 400 13px/18px var(--sf); color: var(--ink-2); }
+
+/* storyboard */
+.board { background: #F3F3F2; }
+.board .wrap { position: absolute; inset: 40px 22px; display: flex; flex-direction: column; }
+.board h2 { font: 700 28px/34px var(--sf); letter-spacing: -.4px; margin: 0; }
+.board .lede { font: 400 15px/20px var(--sf); color: var(--ink-2); margin: 8px 0 0; }
+.frames { display: flex; flex-direction: column; gap: 26px; margin-top: 30px; flex: 1; }
+.fstep { display: flex; gap: 18px; align-items: center; }
+.fcard { width: 132px; flex: none; perspective: 600px; }
+.fcard .inner { display: flex; flex-direction: column; background: var(--ground); border-radius: 18px; padding: 8px 8px 10px; box-shadow: 0 1px 0 var(--rule); }
+.fcard .fr { padding: 4px; border-radius: 14px; position: relative; overflow: hidden; }
+.fcard .fr > .ph { border-radius: 10px; }
+.fcard .lbl { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 2px 0; }
+.fcard .lbl b { font: 850 24px/.8 "Archivo"; font-stretch: 62%; }
+.fcard .lbl span { font: 600 12px/1 var(--sf); }
+.sweep::after { content: ""; position: absolute; inset: -20%; background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.85) 50%, transparent 60%); }
+.fstep .tx { font: 400 15px/20px var(--sf); }
+.fstep .tx b { display: block; font: 600 13px/18px var(--sf); color: var(--ink-2); margin-bottom: 2px; }
+.rm { font: 400 13px/18px var(--sf); color: var(--ink-2); border-top: 0.5px solid var(--rule); padding-top: 12px; }
+
+/* icon */
+.app-icon { background: #15120F; }
+</style></head><body>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19v-8.5Z"/></symbol>
+  <symbol id="medal" viewBox="0 0 24 24"><circle cx="12" cy="14.5" r="6"/><path d="M8.5 9.6 6 3.5h4l2 4.2 2-4.2h4l-2.5 6.1"/><path d="m12 12 .9 1.8 2 .3-1.4 1.4.3 2-1.8-.9-1.8.9.3-2-1.4-1.4 2-.3z" stroke-width="1.3"/></symbol>
+  <symbol id="podium" viewBox="0 0 24 24"><path d="M3.5 20.5h17M5 20.5v-6h4.5v6M9.5 20.5V9h5v11.5M14.5 20.5v-8H19v8"/></symbol>
+  <symbol id="person" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c1-3.6 3.9-5.5 7.5-5.5s6.5 1.9 7.5 5.5"/></symbol>
+  <symbol id="plussq" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+  <symbol id="chevr" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="chevd" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24"><path d="m12 3.6 2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></symbol>
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.4-7.5-10A4.3 4.3 0 0 1 12 7.3 4.3 4.3 0 0 1 19.5 10c0 5.6-7.5 10-7.5 10Z"/></symbol>
+  <symbol id="bubble" viewBox="0 0 24 24"><path d="M20 11.5a8 8 0 0 1-11.6 7.1L4 20l1.4-4.2A8 8 0 1 1 20 11.5Z"/></symbol>
+  <symbol id="send" viewBox="0 0 24 24"><path d="M21 3.5 10.5 13.5M21 3.5l-6.5 17-4-7-7-4z"/></symbol>
+  <symbol id="dots" viewBox="0 0 24 24"><path d="M6 12h.01M12 12h.01M18 12h.01" stroke-width="2.6"/></symbol>
+  <symbol id="menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.6-2.2h5.8L16.5 6h2A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-9Z"/><circle cx="12" cy="12.8" r="3.8"/></symbol>
+  <symbol id="photo" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="m3.5 16 5-5 4 4 2.5-2.5 5.5 5.5"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+  <symbol id="addp" viewBox="0 0 24 24"><circle cx="10" cy="8.5" r="4"/><path d="M3 20.5c.9-3.4 3.6-5.5 7-5.5 1.4 0 2.7.3 3.8 1M18.5 13v7M15 16.5h7"/></symbol>
+  <symbol id="grid" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16"/></symbol>
+</svg>
+
+<!-- ======================= 1. HOME (full scroll) ======================= -->
+<section class="screen" data-name="01-home" data-scroll data-time="19:46">
+  <div class="body">
+    <div class="nav"><span class="wordmark">CookRank</span><span class="acts"><span class="b44 glass"><svg class="i"><use href="#search"/></svg></span></span></div>
+    <div class="rank">
+      <div class="k">Chef rank 2 of 10</div>
+      <h1>College dormer</h1>
+      <div class="pts"><b>112</b> mastery points · <b>89</b> cooks</div>
+      <div class="prog"><span class="seg"><i class="on"></i><i></i><i></i></span><span>Bronze on 2 more recipes opens Meal prepper</span></div>
+    </div>
+
+    <div class="block">
+      <div class="hd"><div><span class="n">Rank 1</span><h2>High school chump</h2></div><span class="st"><svg class="i s"><use href="#check"/></svg>Complete</span></div>
+      <div class="tiles">
+        <div class="tile t-plat"><span class="fr"><span class="ph" style="--img:url(img/eggs.jpg)"></span></span><span class="nm">Eggs on toast</span><span class="ct"><b>23</b> · Platinum</span></div>
+        <div class="tile t-gold"><span class="fr"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><span class="nm">Instant ramen</span><span class="ct"><b>18</b> · Gold</span></div>
+        <div class="tile t-silver"><span class="fr"><span class="ph" style="--img:url(img/grilledcheese.jpg)"></span></span><span class="nm">Grilled cheese</span><span class="ct"><b>11</b> · Silver</span></div>
+        <div class="tile t-silver"><span class="fr"><span class="ph" style="--img:url(img/quesadilla.jpg)"></span></span><span class="nm">Quesadilla</span><span class="ct"><b>10</b> · Silver</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/penne.jpg)"></span></span><span class="nm">Tomato penne</span><span class="ct"><b>4</b> · 1 to bronze</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/pancakes.jpg)"></span></span><span class="nm">Pancakes</span><span class="ct"><b>2</b> cooks</span></div>
+      </div>
+    </div>
+
+    <div class="block now">
+      <div class="hd"><div><span class="n">Rank 2 · now</span><h2>College dormer</h2></div><span class="st">1 of 3 bronze</span></div>
+      <div class="tiles">
+        <div class="tile t-gold"><span class="fr"><span class="ph" style="--img:url(img/friedrice.jpg)"></span></span><span class="nm">Egg fried rice</span><span class="ct"><b>17</b> · Gold</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/wrap.jpg)"></span></span><span class="nm">Chicken wraps</span><span class="ct"><b>3</b> · 2 to bronze</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/tacos.jpg)"></span></span><span class="nm">Sheet-pan tacos</span><span class="ct"><b>1</b> cook</span></div>
+        <div class="tile t-new"><span class="fr"><span class="ph"><svg class="i"><use href="#plus"/></svg></span></span><span class="nm">Burrito bowl</span><span class="ct">Not cooked yet</span></div>
+        <div class="tile t-new"><span class="fr"><span class="ph"><svg class="i"><use href="#plus"/></svg></span></span><span class="nm">Baked meatballs</span><span class="ct">Not cooked yet</span></div>
+        <div class="tile t-new"><span class="fr"><span class="ph"><svg class="i"><use href="#plus"/></svg></span></span><span class="nm">Garlic shrimp pasta</span><span class="ct">Not cooked yet</span></div>
+      </div>
+    </div>
+
+    <div class="block locked">
+      <div class="hd"><div><span class="n">Rank 3</span><h2>Meal prepper</h2></div><span class="st"><svg class="i s"><use href="#lock"/></svg>Locked</span></div>
+      <div class="tiles">
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+      </div>
+    </div>
+
+    <div class="block locked">
+      <div class="hd"><div><span class="n">Rank 4</span><h2>Hobbyist</h2></div><span class="st"><svg class="i s"><use href="#lock"/></svg>Locked</span></div>
+      <div class="tiles">
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span></div>
+      </div>
+    </div>
+    <div class="more">Then Date night, Junior chef, Real chef, Expert chef, Master chef and Grandmaster chef.</div>
+    <div style="height:120px"></div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab on"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 2. RECIPE PAGE (full scroll) ======================= -->
+<section class="screen" data-name="02-recipe" data-scroll data-time="19:48">
+  <div class="body">
+    <div class="nav pad16"><span class="b44 glass"><svg class="i"><use href="#back"/></svg></span><span class="acts"><span class="b44 glass"><svg class="i"><use href="#star"/></svg></span><span class="b44 fill"><svg class="i"><use href="#plus"/></svg></span></span></div>
+    <div class="hero t-silver"><span class="fr"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span></div>
+    <div class="rtitle"><div class="k">High school chump · Difficulty 1 of 5</div><h1>Instant ramen, upgraded</h1></div>
+    <div class="count"><span class="big tnum">12</span><div><div class="tr">Silver</div><div class="nx">3 more cooks for gold</div></div></div>
+    <div class="bar"><i></i></div>
+    <div class="fam">Ramen family: <b>18 cooks</b> across 3 recipes</div>
+
+    <div class="sec">
+      <h3>Variations</h3>
+      <div class="sub">Bronze on a recipe opens the row below it.</div>
+      <div class="tiles">
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/ramen-cheese.jpg)"></span></span><span class="nm">Egg drop &amp; scallion</span><span class="ct"><b>4</b> · 1 to bronze</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/ramen-budae.jpg)"></span></span><span class="nm">Budae ramen</span><span class="ct"><b>2</b> cooks</span></div>
+        <div class="tile t-new"><span class="fr"><span class="ph"><svg class="i"><use href="#plus"/></svg></span></span><span class="nm">Cheese ramen</span><span class="ct">Not cooked yet</span></div>
+      </div>
+      <div class="rowlabel"><svg class="i s"><use href="#lock"/></svg>Next row: bronze on any variation above</div>
+      <div class="tiles">
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span><span class="nm" style="color:var(--ink-2)">Brisket ramen</span><span class="ct">Difficulty 3</span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span><span class="nm" style="color:var(--ink-2)">Spicy miso</span><span class="ct">Difficulty 3</span></div>
+        <div class="tile t-lock"><span class="fr"><span class="ph">?</span></span><span class="nm" style="color:var(--ink-2)">Tonkotsu-style</span><span class="ct">Difficulty 4</span></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="lrow"><span class="grow">How to cook it</span><span class="muted">6 ingredients · 12 min</span><svg class="i s muted"><use href="#chevr"/></svg></div>
+    </div>
+
+    <div class="sec" style="padding-top:36px">
+      <h3>Your cooks</h3>
+      <div class="sub">12 photos, newest first</div>
+      <div class="cook"><span class="ph" style="--img:url(img/ramen.jpg)"></span><div><div class="d">Cook #12 · Thu, Oct 16</div><div class="t">Last egg in the fridge and a spoon of chili crisp. Hall B smells like garlic now.</div></div></div>
+      <div class="cook"><span class="ph" style="--img:url(img/ramen-tonkotsu.jpg)"></span><div><div class="d">Cook #11 · Sun, Oct 12</div><div class="t">Too much water again. Still ate all of it.</div></div></div>
+      <div class="cook"><span class="ph" style="--img:url(img/noodles-fried.jpg)"></span><div><div class="d">Cook #10 · Thu, Oct 9</div><div class="t">Silver. Tried it dry like the packet says not to.</div></div></div>
+      <div class="seeall">See all 12 cooks</div>
+    </div>
+    <div style="height:56px"></div>
+  </div>
+</section>
+
+<!-- ======================= 3. COOK THIS RECIPE ======================= -->
+<section class="screen" data-name="03-new-cook" data-time="19:52">
+  <div class="body">
+    <div class="cbar"><span class="l">Cancel</span><span class="c">New cook</span><span class="r">Post</span></div>
+    <div class="crec"><span class="fr t-silver"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><div><div class="a">Instant ramen, upgraded</div><div class="b">Cook #13 · 2 more after this for gold</div></div></div>
+    <span class="ph cphoto" style="--img:url(img/ramen-egg.jpg)"></span>
+    <div class="cbtns"><span><svg class="i s"><use href="#cam"/></svg>Retake</span><span><svg class="i s"><use href="#photo"/></svg>Library</span></div>
+    <div class="cdesc">Soft eggs this time. Six and a half minutes, then straight into ice.</div>
+    <div class="cmeta"><span>Today's 1st of 10 cooks of this recipe</span><span class="tnum">66 / 150</span></div>
+    <div class="cfoot"></div>
+  </div>
+</section>
+
+<!-- ======================= 4. MASTERY ======================= -->
+<section class="screen" data-name="04-mastery" data-time="19:46">
+  <div class="body">
+    <div class="nav"><span></span><span class="b44 glass"><svg class="i"><use href="#search"/></svg></span></div>
+    <div class="lt" style="margin-top:-8px">Mastery</div>
+    <div class="chips" data-scrolls data-bleed><span class="chip on">All ranks</span><span class="chip">High school chump</span><span class="chip">College dormer</span><span class="chip off"><svg class="i s"><use href="#lock"/></svg>Meal prepper</span></div>
+    <div class="filters2"><div class="segc" data-system><span class="on">All</span><span>Base</span><span>Variations</span></div><span class="chip">Any tier<svg class="i s"><use href="#chevd"/></svg></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="h4">Starred</div>
+      <div class="starred">
+        <div class="tile t-gold"><span class="fr"><span class="ph" style="--img:url(img/friedrice.jpg)"></span></span><span class="nm">Egg fried rice</span><span class="ct"><b>17</b> · Gold</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/ramen-budae.jpg)"></span></span><span class="nm">Budae ramen</span><span class="ct"><b>2</b> cooks</span></div>
+        <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/penne.jpg)"></span></span><span class="nm">Tomato penne</span><span class="ct"><b>4</b> cooks</span></div>
+      </div>
+      <div class="h4">All recipes <span>14 open</span></div>
+      <div class="mrow t-plat"><span class="fr"><span class="ph" style="--img:url(img/eggs.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Eggs on toast</div><div class="b">High school chump · Base · Difficulty 1</div></div><div class="n"><b>23</b><span>Platinum</span></div></div></div>
+      <div class="mrow t-gold"><span class="fr"><span class="ph" style="--img:url(img/friedrice.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Egg fried rice <svg class="i s star" style="fill:currentColor"><use href="#star"/></svg></div><div class="b">College dormer · Base · Difficulty 2</div></div><div class="n"><b>17</b><span>Gold</span></div></div></div>
+      <div class="mrow t-silver"><span class="fr"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Instant ramen, upgraded</div><div class="b">High school chump · Base · Difficulty 1</div></div><div class="n"><b>12</b><span>Silver</span></div></div></div>
+      <div class="mrow t-silver"><span class="fr"><span class="ph" style="--img:url(img/grilledcheese.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Grilled cheese</div><div class="b">High school chump · Base · Difficulty 1</div></div><div class="n"><b>11</b><span>Silver</span></div></div></div>
+      <div class="mrow t-silver"><span class="fr"><span class="ph" style="--img:url(img/quesadilla.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Quesadilla</div><div class="b">High school chump · Base · Difficulty 1</div></div><div class="n"><b>10</b><span>Silver</span></div></div></div>
+      <div class="mrow t-blank"><span class="fr"><span class="ph" style="--img:url(img/ramen-cheese.jpg)"></span></span><div class="txt"><div class="grow"><div class="a">Egg drop &amp; scallion ramen</div><div class="b">Variation of Instant ramen · Difficulty 1</div></div><div class="n"><b>4</b><span>1 to bronze</span></div></div></div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab on"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 5. LEADERBOARD ======================= -->
+<section class="screen" data-name="05-leaderboard" data-time="19:46">
+  <div class="body">
+    <div class="nav"><span></span><span class="b44 glass"><svg class="i"><use href="#search"/></svg></span></div>
+    <div class="lt" style="margin-top:-8px">Leaderboard</div>
+    <div class="filters2" style="padding-top:14px"><div class="segc" data-system><span class="on">Columbus</span><span>United States</span><span>World</span></div></div>
+    <div class="lcap">Ranked by mastery points: each recipe's difficulty × its cooks, added up.</div>
+    <div class="scroll" data-scrolls>
+      <div class="lb top"><span class="rk">1</span><span class="ph av" style="--img:url(img/bibimbap.jpg)"></span><div class="grow"><div class="u">jun.kitchen</div><div class="m">Junior chef · Bibimbap</div></div><div class="p"><b>2,431</b><span>1,102 cooks</span></div></div>
+      <div class="lb top"><span class="rk">2</span><span class="ph av" style="--img:url(img/salmon.jpg)"></span><div class="grow"><div class="u">dani_bakes</div><div class="m">Date night · Pan-seared salmon</div></div><div class="p"><b>2,017</b><span>940 cooks</span></div></div>
+      <div class="lb top"><span class="rk">3</span><span class="ph av" style="--img:url(img/ramen-tonkotsu.jpg)"></span><div class="grow"><div class="u">ramen.ryo</div><div class="m">High school chump · Budae ramen</div></div><div class="p"><b>1,876</b><span>803 cooks</span></div></div>
+      <div class="lb"><span class="rk">4</span><span class="ph av" style="--img:url(img/burger.jpg)"></span><div class="grow"><div class="u">coop.cooks</div><div class="m">Hobbyist · Smash burgers</div></div><div class="p"><b>1,512</b><span>655 cooks</span></div></div>
+      <div class="lb"><span class="rk">5</span><span class="ph av" style="--img:url(img/grainbowl.jpg)"></span><div class="grow"><div class="u">lena.preps</div><div class="m">Meal prepper · Grain bowls</div></div><div class="p"><b>1,207</b><span>588 cooks</span></div></div>
+      <div class="lb"><span class="rk">6</span><span class="ph av" style="--img:url(img/katsu.jpg)"></span><div class="grow"><div class="u">marcus.m</div><div class="m">Hobbyist · Chicken katsu</div></div><div class="p"><b>1,090</b><span>512 cooks</span></div></div>
+      <div class="lb"><span class="rk">7</span><span class="ph av" style="--img:url(img/porkchop.jpg)"></span><div class="grow"><div class="u">sofia.r</div><div class="m">Meal prepper · Pork chops</div></div><div class="p"><b>964</b><span>470 cooks</span></div></div>
+      <div class="lb"><span class="rk">8</span><span class="ph av" style="--img:url(img/friedrice.jpg)"></span><div class="grow"><div class="u">big.nate</div><div class="m">College dormer · Egg fried rice</div></div><div class="p"><b>811</b><span>433 cooks</span></div></div>
+      <div class="lb"><span class="rk">9</span><span class="ph av" style="--img:url(img/shrimp.jpg)"></span><div class="grow"><div class="u">priya.cooks</div><div class="m">Meal prepper · Garlic shrimp pasta</div></div><div class="p"><b>777</b><span>361 cooks</span></div></div>
+    </div>
+  </div>
+  <div class="you" data-float><div class="lb"><span class="rk">48</span><span class="ph av" style="--img:url(img/eggs.jpg)"></span><div class="grow"><div class="u">theo.cooks · you</div><div class="m">College dormer · Eggs on toast</div></div><div class="p"><b>112</b><span>89 cooks</span></div></div></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab on"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 6. PROFILE: ME ======================= -->
+<section class="screen" data-name="06-profile-me" data-time="19:46">
+  <div class="body">
+    <div class="nav pad16"><div class="pseg glass"><span>Friends</span><span class="on">Me</span></div><span class="b44 glass"><svg class="i"><use href="#menu"/></svg></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="phead"><span class="ph av" style="--img:url(img/eggs.jpg)"></span><div class="pstats"><div><b>89</b><span>cooks</span></div><div><b>214</b><span>followers</span></div><div><b>183</b><span>following</span></div></div></div>
+      <div class="pname">Theo Marsh</div>
+      <div class="prank">College dormer · 112 mastery points</div>
+      <div class="pbio">Hall B shared kitchen. One pan, one hob that works.</div>
+      <div class="ptop">Top dishes: <b>Eggs on toast</b>, <b>Egg fried rice</b></div>
+      <div class="pbtns"><span>Edit profile</span><span>Share profile</span></div>
+      <div class="pins">
+        <div class="pin"><span class="ring" style="background:var(--plat)"><span class="ph" style="--img:url(img/eggs.jpg)"></span></span><span>Eggs</span></div>
+        <div class="pin"><span class="ring" style="background:var(--gold)"><span class="ph" style="--img:url(img/friedrice.jpg)"></span></span><span>Fried rice</span></div>
+        <div class="pin"><span class="ring" style="background:var(--gold)"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><span>Ramen</span></div>
+        <div class="pin"><span class="ring" style="background:var(--silver)"><span class="ph" style="--img:url(img/quesadilla.jpg)"></span></span><span>Quesadilla</span></div>
+        <div class="pin"><span class="ring dash"><svg class="i"><use href="#plus"/></svg></span><span>Pin</span></div>
+      </div>
+      <div class="pgrid">
+        <span class="ph" style="--img:url(img/ramen-egg.jpg)"></span><span class="ph" style="--img:url(img/friedrice.jpg)"></span><span class="ph" style="--img:url(img/eggs.jpg)"></span>
+        <span class="ph" style="--img:url(img/ramen.jpg)"></span><span class="ph" style="--img:url(img/tacos.jpg)"></span><span class="ph" style="--img:url(img/wrap.jpg)"></span>
+        <span class="ph" style="--img:url(img/quesadilla.jpg)"></span><span class="ph" style="--img:url(img/grilledcheese.jpg)"></span><span class="ph" style="--img:url(img/penne.jpg)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab on"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 7. PROFILE: FRIENDS ======================= -->
+<section class="screen" data-name="07-profile-friends" data-time="19:46">
+  <div class="body">
+    <div class="nav pad16"><div class="pseg glass"><span class="on">Friends</span><span>Me</span></div><span class="b44 glass"><svg class="i"><use href="#addp"/></svg></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="post">
+        <div class="ph-h"><span class="ph av" style="--img:url(img/bibimbap.jpg)"></span><div class="grow"><div class="u">jun.kitchen</div><div class="r">Bibimbap · Master · Cook #64</div></div><svg class="i muted"><use href="#dots"/></svg></div>
+        <span class="ph img" style="--img:url(img/bibimbap.jpg)"></span>
+        <div class="acts2"><span class="liked"><svg class="i"><use href="#heart"/></svg></span><svg class="i"><use href="#bubble"/></svg><svg class="i"><use href="#send"/></svg></div>
+        <div class="likes">128 likes</div>
+        <div class="cap"><b>jun.kitchen</b> Gochujang from the Korean market on 5th. The crispy rice at the bottom is the whole point.</div>
+        <div class="vc">View all 14 comments</div>
+        <div class="when">2 hours ago</div>
+      </div>
+      <div class="post">
+        <div class="ph-h"><span class="ph av" style="--img:url(img/salmon.jpg)"></span><div class="grow"><div class="u">dani_bakes</div><div class="r">Pan-seared salmon · Gold · Cook #17</div></div><svg class="i muted"><use href="#dots"/></svg></div>
+        <span class="ph img" style="--img:url(img/salmon.jpg)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab on"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 8. COMMENTS ======================= -->
+<section class="screen" data-name="08-comments" data-time="19:47">
+  <div class="body" data-behind>
+    <div class="nav pad16"><div class="pseg glass"><span class="on">Friends</span><span>Me</span></div><span class="b44 glass"><svg class="i"><use href="#addp"/></svg></span></div>
+    <div class="post">
+      <div class="ph-h"><span class="ph av" style="--img:url(img/bibimbap.jpg)"></span><div class="grow"><div class="u">jun.kitchen</div><div class="r">Bibimbap · Master · Cook #64</div></div></div>
+      <span class="ph img" style="--img:url(img/bibimbap.jpg)"></span>
+    </div>
+  </div>
+  <div class="scrim"></div>
+  <div class="sheet">
+    <div class="grab"></div>
+    <div class="st">Comments</div>
+    <div class="cm"><span class="ph av" style="--img:url(img/friedrice.jpg)"></span><div class="grow"><div class="u">big.nate<span>1h</span></div><div class="t">Is that the red tub gochujang? Mine always ends up too sweet.</div><div class="rp">Reply</div></div><svg class="i s hl"><use href="#heart"/></svg></div>
+    <div class="cm"><span class="ph av" style="--img:url(img/bibimbap.jpg)"></span><div class="grow"><div class="u">jun.kitchen<span>52m</span></div><div class="t">Same one. Cut it with a splash of rice vinegar.</div><div class="rp">Reply</div></div><svg class="i s hl"><use href="#heart"/></svg></div>
+    <div class="cm"><span class="ph av" style="--img:url(img/grainbowl.jpg)"></span><div class="grow"><div class="u">lena.preps<span>8m</span></div><div class="t">Sixty-four cooks of one dish. Respect.</div><div class="rp">Reply</div></div><svg class="i s hl"><use href="#heart"/></svg></div>
+    <div class="cinput"><span class="ph av" style="--img:url(img/eggs.jpg)"></span><span class="f">Add a comment for jun.kitchen</span><span class="p">Post</span></div>
+  </div>
+</section>
+
+<!-- ======================= 9. SOMEONE ELSE'S PROFILE ======================= -->
+<section class="screen" data-name="09-their-profile" data-time="19:49">
+  <div class="body">
+    <div class="nav pad16"><span class="b44 glass"><svg class="i"><use href="#back"/></svg></span><span style="font:600 17px/22px var(--sf)">ramen.ryo</span><span class="b44 glass"><svg class="i"><use href="#dots"/></svg></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="phead"><span class="ph av" style="--img:url(img/ramen-tonkotsu.jpg)"></span><div class="pstats"><div><b>803</b><span>cooks</span></div><div><b>3,104</b><span>followers</span></div><div><b>96</b><span>following</span></div></div></div>
+      <div class="pname">Ryo Tanaka</div>
+      <div class="prank">High school chump · 1,876 mastery points · #3 in Columbus</div>
+      <div class="pbio">Only ramen. Every ramen.</div>
+      <div class="ptop">Top dishes: <b>Budae ramen</b>, <b>Brisket ramen</b></div>
+      <div class="pbtns"><span class="go">Follow</span><span>Message</span></div>
+      <div class="pins">
+        <div class="pin"><span class="ring" style="background:var(--gm)"><span class="ph" style="--img:url(img/ramen-budae.jpg)"></span></span><span>Budae</span></div>
+        <div class="pin"><span class="ring" style="background:var(--gm)"><span class="ph" style="--img:url(img/ramen-brisket.jpg)"></span></span><span>Brisket</span></div>
+        <div class="pin"><span class="ring" style="background:var(--gm)"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><span>Instant</span></div>
+        <div class="pin"><span class="ring" style="background:var(--master)"><span class="ph" style="--img:url(img/ramen-tonkotsu.jpg)"></span></span><span>Tonkotsu</span></div>
+        <div class="pin"><span class="ring" style="background:var(--plat)"><span class="ph" style="--img:url(img/ramen-cheese.jpg)"></span></span><span>Egg drop</span></div>
+      </div>
+      <div class="pgrid">
+        <span class="ph" style="--img:url(img/ramen-brisket.jpg)"></span><span class="ph" style="--img:url(img/ramen-budae.jpg)"></span><span class="ph" style="--img:url(img/ramen-tonkotsu.jpg)"></span>
+        <span class="ph" style="--img:url(img/ramen-egg.jpg)"></span><span class="ph" style="--img:url(img/noodles-fried.jpg)"></span><span class="ph" style="--img:url(img/ramen-cheese.jpg)"></span>
+        <span class="ph" style="--img:url(img/ramen.jpg)"></span><span class="ph" style="--img:url(img/ramen-budae.jpg)"></span><span class="ph" style="--img:url(img/ramen-brisket.jpg)"></span>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab on"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 10. TIER-UP (signature) ======================= -->
+<section class="screen board" data-name="10-tier-up" data-chrome="none">
+  <div class="wrap">
+    <h2>Tier-up</h2>
+    <p class="lede">After posting cook #15 of Instant ramen, the app returns to the recipe page and the card turns over to its new metal.</p>
+    <div class="frames">
+      <div class="fstep"><div class="fcard"><div class="inner t-silver"><span class="fr"><span class="ph" style="--img:url(img/ramen-egg.jpg)"></span></span><div class="lbl"><b class="tnum">15</b><span>Silver</span></div></div></div><div class="tx"><b>0 ms</b>The count rolls from 14 to 15. Light haptic.</div></div>
+      <div class="fstep"><div class="fcard"><div class="inner t-gold" style="transform: rotateY(62deg); transform-origin: center;"><span class="fr"><span class="ph" style="--img:url(img/ramen-egg.jpg)"></span></span><div class="lbl"><b class="tnum">15</b><span>Gold</span></div></div></div><div class="tx"><b>120 to 380 ms</b>The card turns on its vertical axis. The new frame is on the back. Spring, no bounce.</div></div>
+      <div class="fstep"><div class="fcard"><div class="inner t-gold"><span class="fr sweep"><span class="ph" style="--img:url(img/ramen-egg.jpg)"></span></span><div class="lbl"><b class="tnum">15</b><span>Gold</span></div></div></div><div class="tx"><b>380 to 900 ms</b>It lands gold. One sweep of light crosses the foil. Success haptic. "Gold" fades in.</div></div>
+    </div>
+    <div class="rm">Reduce Motion: no turn, the frame cross-fades to gold in 200 ms, same haptics.</div>
+  </div>
+</section>
+
+<!-- ======================= 11. HOME, DARK ======================= -->
+<section class="screen" data-name="11-home-dark" data-theme="dark" data-time="22:31">
+  <div class="body">
+    <div class="nav"><span class="wordmark">CookRank</span><span class="acts"><span class="b44 glass"><svg class="i"><use href="#search"/></svg></span></span></div>
+    <div class="scroll" data-scrolls>
+      <div class="rank">
+        <div class="k">Chef rank 2 of 10</div>
+        <h1>College dormer</h1>
+        <div class="pts"><b>112</b> mastery points · <b>89</b> cooks</div>
+        <div class="prog"><span class="seg"><i class="on"></i><i></i><i></i></span><span>Bronze on 2 more recipes opens Meal prepper</span></div>
+      </div>
+      <div class="block">
+        <div class="hd"><div><span class="n">Rank 1</span><h2>High school chump</h2></div><span class="st"><svg class="i s"><use href="#check"/></svg>Complete</span></div>
+        <div class="tiles">
+          <div class="tile t-plat"><span class="fr"><span class="ph" style="--img:url(img/eggs.jpg)"></span></span><span class="nm">Eggs on toast</span><span class="ct"><b>23</b> · Platinum</span></div>
+          <div class="tile t-gold"><span class="fr"><span class="ph" style="--img:url(img/ramen.jpg)"></span></span><span class="nm">Instant ramen</span><span class="ct"><b>18</b> · Gold</span></div>
+          <div class="tile t-silver"><span class="fr"><span class="ph" style="--img:url(img/grilledcheese.jpg)"></span></span><span class="nm">Grilled cheese</span><span class="ct"><b>11</b> · Silver</span></div>
+          <div class="tile t-silver"><span class="fr"><span class="ph" style="--img:url(img/quesadilla.jpg)"></span></span><span class="nm">Quesadilla</span><span class="ct"><b>10</b> · Silver</span></div>
+          <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/penne.jpg)"></span></span><span class="nm">Tomato penne</span><span class="ct"><b>4</b> · 1 to bronze</span></div>
+          <div class="tile t-blank"><span class="fr"><span class="ph" style="--img:url(img/pancakes.jpg)"></span></span><span class="nm">Pancakes</span><span class="ct"><b>2</b> cooks</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="edge" data-float></div>
+  <nav class="tabs glass" data-system><span class="tab on"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaderboard</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span></nav>
+</section>
+
+<!-- ======================= 12. CREATE (MVP+) ======================= -->
+<section class="screen" data-name="12-create" data-time="21:05">
+  <div class="body">
+    <div class="cbar"><span class="l">Cancel</span><span class="c">New recipe</span><span class="r" style="opacity:.4">Submit</span></div>
+    <div class="cover"><svg class="i"><use href="#photo"/></svg>Add a cover photo</div>
+    <div class="group">
+      <div class="fl"><span class="grow">Kimchi butter ramen</span></div>
+      <div class="fl"><span class="grow">Type</span><span class="v">Variation of Instant ramen<svg class="i s"><use href="#chevr"/></svg></span></div>
+      <div class="fl"><span class="grow">Chef rank</span><span class="v">High school chump<svg class="i s"><use href="#chevr"/></svg></span></div>
+      <div class="fl"><span class="grow">Difficulty</span><span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+    </div>
+    <div class="group">
+      <div class="fl"><span class="grow">Ingredients</span><span class="v">7<svg class="i s"><use href="#chevr"/></svg></span></div>
+      <div class="fl"><span class="grow">Steps</span><span class="v">5<svg class="i s"><use href="#chevr"/></svg></span></div>
+    </div>
+    <div class="note">The CookRank team reviews every recipe before it goes live. Once published it stays credited to @ramen.ryo, even if you leave the leaderboard.</div>
+  </div>
+  <nav class="tabs glass" data-system><span class="tab"><svg class="i"><use href="#home"/></svg>Home</span><span class="tab"><svg class="i"><use href="#medal"/></svg>Mastery</span><span class="tab"><svg class="i"><use href="#podium"/></svg>Leaders</span><span class="tab"><svg class="i"><use href="#person"/></svg>Profile</span><span class="tab on"><svg class="i"><use href="#plussq"/></svg>Create</span></nav>
+</section>
+
+<!-- ======================= ICON ======================= -->
+<section class="app-icon" data-name="icon">
+  <svg viewBox="0 0 344 344" width="344" height="344">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE39A"/><stop offset=".38" stop-color="#D5A53E"/><stop offset=".54" stop-color="#FCE7A6"/><stop offset="1" stop-color="#9C6E1C"/></linearGradient>
+    </defs>
+    <g transform="rotate(-8 172 172)">
+      <rect x="86" y="58" width="172" height="228" rx="30" fill="url(#g)"/>
+      <rect x="98" y="70" width="148" height="204" rx="20" fill="#221D18"/>
+      <path d="M172 112c30 0 52 18 54 44 2 22-12 32-10 50 2 20-20 34-44 32-30-2-50-20-50-46 0-18 10-26 6-44-4-22 16-36 44-36z" fill="#F7F3EC"/>
+      <circle cx="170" cy="172" r="28" fill="#F2A21B"/>
+    </g>
+  </svg>
+</section>
+
+<script src="kit/device.js"></script>
+</body></html>

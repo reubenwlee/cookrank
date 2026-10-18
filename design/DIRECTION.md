@@ -23,7 +23,10 @@
   Post-MVP: recipe variations, user-submitted recipes and menus.
 - **Recipes:** written by us, bundled, editable in the backend later.
 - **Anti-cheat:** honor system.
-- **Build:** native SwiftUI iPhone app, Firebase (Auth, Firestore, Storage).
+- **Build:** React Native (Expo) for iOS and Android, Firebase (Auth, Firestore, Storage).
+- **Superseded:** the screen list and rules now live in `FLOW.md` (2026-10-18). The look
+  moved from the dark binder to minimal light, like Instagram, keeping A's foil tier
+  frames and condensed display numerals (`mockup.html`).
 - **Imagery:** stand-in food photography from Unsplash (verified, stored in
   `img/`). In the product the imagery is **the users' own dish photos**.
 - **Rendering caveat:** this design was made on Linux. Apple's SF Pro is
