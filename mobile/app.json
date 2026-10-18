@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "CookRank",
+    "slug": "cookrank",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cookrank.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#15120F",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.cookrank.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      "expo-image",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#15120F"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "CookRank uses your photos so you can post the dishes you cooked.",
+          "cameraPermission": "CookRank uses the camera so you can photograph the dishes you cook."
+        }
+      ]
+    ],
+    "scheme": "cookrank"
+  }
+}

@@ -32,7 +32,10 @@ tier frames carry the colour.
   recipe and variation. Difficulty is set per recipe (1 to 5). The
   leaderboard ranks by mastery points, not by chef rank.
 - **Cook limit:** 10 cooks of a recipe per day.
-- **Social:** one-way follow, public profiles, likes and comments on posts.
+- **Social:** one-way follow, public profiles, likes and comments on posts,
+  direct messages.
+- **Locked ranks** hide their names and recipes. **Leaderboard regions** come
+  from a home city the user picks.
 
 ## Bottom bar
 
